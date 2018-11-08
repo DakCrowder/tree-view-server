@@ -6,6 +6,7 @@ const { Root, Factory, Node, Op } = require('./sequelize')
 
 const maxBound = 1000000000
 
+// Only allow requests from our local react app and our prod app
 const allowedOrigins = ['http://localhost:3001', 'https://afternoon-citadel-88339.herokuapp.com/'];
 var options = {
   origin: function (origin, callback) {
@@ -16,16 +17,15 @@ var options = {
     }
   }
 }
+app.use(cors(options))
 
-/* Redirect http to https */
+// Redirect http to https
 app.all('*', function(req,res,next) {
   if(req.headers['x-forwarded-proto'] != 'https')
     res.redirect('https://'+req.hostname+req.url)
   else
-    next() /* Continue to other routes if we're not redirecting */
+    next() // Continue to other routes if we're not redirecting
 });
-
-app.use(cors(options))
 
 // Error handler
 app.use(function (err, req, res, next) {
@@ -167,6 +167,8 @@ function editFactory(data, socket) {
         }).then((nodes) => {
           if(nodes.length > 1) {
             regenNodes(factory, null).then(() => emitTreeToAll())
+          } else {
+            emitTreeToAll()
           }
         })
       })
