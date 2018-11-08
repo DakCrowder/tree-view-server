@@ -5,7 +5,7 @@ const NodeModel = require('./models/node')
 const RootModel = require('./models/root')
 
 let sequelize = null
-
+console.log('process.env.HEROKU_POSTGRESQL_BRONZE_URL', process.env.HEROKU_POSTGRESQL_BRONZE_URL)
 if (process.env.HEROKU_POSTGRESQL_BRONZE_URL) {
   // the application is executed on Heroku ... use the postgres database
   sequelize = new Sequelize(process.env.HEROKU_POSTGRESQL_BRONZE_URL, {
