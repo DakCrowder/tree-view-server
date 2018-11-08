@@ -17,7 +17,22 @@ var options = {
   }
 }
 
+/* Redirect http to https */
+app.all('*', function(req,res,next) {
+  if(req.headers['x-forwarded-proto'] != 'https')
+    res.redirect('https://'+req.hostname+req.url)
+  else
+    next() /* Continue to other routes if we're not redirecting */
+});
+
 app.use(cors(options))
+io.origins(allowedOrigins)
+
+// Error handler
+app.use(function (err, req, res, next) {
+  console.error(err.stack)
+  res.status(500).send('Something broke!  Error: ' + err)
+})
 
 let port = process.env.PORT;
 if (port == null || port == "") {
@@ -184,8 +199,3 @@ function getRandomInt(min, max) {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-// For testing if the server is running
-app.get('/', function (req, res) {
-  res.send({ response: "Server is running" }).status(200);
-});
