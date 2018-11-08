@@ -26,7 +26,6 @@ app.all('*', function(req,res,next) {
 });
 
 app.use(cors(options))
-io.origins(allowedOrigins)
 
 // Error handler
 app.use(function (err, req, res, next) {
