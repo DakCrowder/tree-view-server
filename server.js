@@ -1,9 +1,23 @@
 var app = require('express')();
+var cors = require('cors');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 const { Root, Factory, Node, Op } = require('./sequelize')
 
 const maxBound = 1000000000
+
+const allowedOrigins = ['http://localhost:3001', 'https://afternoon-citadel-88339.herokuapp.com/'];
+var options = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Requests from this domain not allowed'))
+    }
+  }
+}
+
+app.use(cors(options))
 
 let port = process.env.PORT;
 if (port == null || port == "") {
