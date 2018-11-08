@@ -5,6 +5,12 @@ const { Root, Factory, Node, Op } = require('./sequelize')
 
 const maxBound = 1000000000
 
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+server.listen(port);
+
 // This is a bit hacky, because we don't allow for Root creation we always know we need our one root
 // Ensure its is created immediately if it doesn't exist
 Root.findOrCreate({
@@ -17,10 +23,6 @@ io.on('connection', function (socket) {
   socket.on('deleteFactory', deleteFactory)
   socket.on('regenFactoryNodes', regenFactoryNodes)
   emitTree(socket)
-});
-
-server.listen(3000, function() {
-  console.log('listening on localhost:3000');
 });
 
 function retrieveTree() {
