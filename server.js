@@ -11,12 +11,6 @@ if (port == null || port == "") {
 }
 server.listen(port);
 
-// This is a bit hacky, because we don't allow for Root creation we always know we need our one root
-// Ensure its is created immediately if it doesn't exist
-Root.findOrCreate({
-  where: {id: 1},
-})
-
 io.on('connection', function (socket) {
   socket.on('addFactory', (data) => addFactory(data, socket))
   socket.on('editFactory', (data) => editFactory(data, socket))

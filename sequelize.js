@@ -10,7 +10,6 @@ if (process.env.HEROKU_POSTGRESQL_BRONZE_URL) {
   // the application is executed on Heroku ... use the postgres database
   sequelize = new Sequelize(process.env.HEROKU_POSTGRESQL_BRONZE_URL, {
     dialect:  'mysql',
-    protocol: 'mysql',
     port:     match[4],
     host:     match[3],
     logging:  true //false
@@ -31,8 +30,8 @@ if (process.env.HEROKU_POSTGRESQL_BRONZE_URL) {
 sequelize
   .authenticate()
   .then(() => {
-  console.log('Connection has been established successfully.');
-})
+    console.log('Connection has been established successfully.');
+  })
 .catch(err => {
   console.error('Unable to connect to the database:', err);
 });
@@ -44,10 +43,15 @@ const Node = NodeModel(sequelize, Sequelize)
 Root.hasMany(Factory, {onDelete: 'CASCADE'})
 Factory.hasMany(Node, {onDelete: 'CASCADE'})
 
-// TODO remove force: true, this should be used for local dev only { force: true }
 sequelize.sync()
   .then(() => {
-  console.log(`Database synced`)
+  console.log(`Database synced!`)
+
+  // This is a bit hacky, because we don't allow for Root creation we always know we need our one root
+  // Ensure its is created immediately if it doesn't exist
+  Root.findOrCreate({
+    where: {id: 1},
+  })
 })
 
 module.exports = {
