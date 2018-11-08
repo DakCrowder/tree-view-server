@@ -113,7 +113,13 @@ function validationError(data) {
   return ''
 }
 
+function boundsToInt(data) {
+  data.lowerBound = parseInt(data.lowerBound)
+  data.upperBound = parseInt(data.upperBound)
+}
+
 function addFactory(data, socket) {
+  boundsToInt(data)
   let error = validationError(data)
   if (error) {
     emitError(socket, error)
@@ -140,6 +146,7 @@ function addFactory(data, socket) {
 }
 
 function editFactory(data, socket) {
+  boundsToInt(data)
   let error = validationError(data)
   if (error) {
     emitError(socket, error)
@@ -165,7 +172,7 @@ function editFactory(data, socket) {
             }
           },
         }).then((nodes) => {
-          if(nodes.length > 1) {
+          if(nodes.length > 0) {
             regenNodes(factory, null).then(() => emitTreeToAll())
           } else {
             emitTreeToAll()
